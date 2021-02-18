@@ -9,8 +9,6 @@ groupChatRoute.use(
   Composer.lazy((ctx) => {
     const { chat } = ctx;
 
-    console.log(chat);
-
     switch (chat.id) {
       case +ADMIN_CHAT:
         return adminRoute;

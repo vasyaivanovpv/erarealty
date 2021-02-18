@@ -11,6 +11,7 @@ adminRoute.command("getTime", async (ctx) => {
     timeZone: "Europe/Moscow",
     hour: "numeric",
     minute: "numeric",
+    hour12: false,
   };
 
   await ctx.replyWithMarkdown(`❗️ ${d}`);
