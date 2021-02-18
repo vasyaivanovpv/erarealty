@@ -1,0 +1,15 @@
+module.exports = {
+  stepObjectReType: require("./stepObjectReType"),
+  stepTotalArea: require("./stepTotalArea"),
+  stepApartAreas: require("./stepApartAreas"),
+  stepNumberRooms: require("./stepNumberRooms"),
+  stepFloor: require("./stepFloor"),
+  stepPhoto: require("./stepPhoto"),
+  stepPrice: require("./stepPrice"),
+  stepDistrict: require("./stepDistrict"),
+  stepAddress: require("./stepAddress"),
+  stepMortgage: require("./stepMortgage"),
+  stepExtra: require("./stepExtra"),
+  stepPhones: require("./stepPhones"),
+  stepSaveObjectRe: require("./stepSaveObjectRe"),
+};
