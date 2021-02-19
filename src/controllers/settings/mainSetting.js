@@ -93,9 +93,6 @@ settings.on("callback_query", async (ctx) => {
 
   let optionsDB, mainSettingText, objectReCount;
 
-  objectReCount = await ObjectRe.estimatedDocumentCount();
-  if (!objectReCount) return ctx.answerCbQuery("Нет добавленных объектов!");
-
   switch (type) {
     case typesQuery.START_AUTOPOSTING:
       objectReCount = await ObjectRe.estimatedDocumentCount();
