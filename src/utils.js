@@ -78,4 +78,14 @@ module.exports = {
   },
   formatPrice: (price) => `${price}`.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1 "),
   isFloat: (n) => !!n && n > 0 && n !== Infinity && n !== -Infinity,
+  getLocalTime: () => {
+    const d = new Date();
+    const options = {
+      timeZone: "Europe/Moscow",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: false,
+    };
+    return d.toLocaleTimeString("ru-RU", options);
+  },
 };

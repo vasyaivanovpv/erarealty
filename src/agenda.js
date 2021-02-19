@@ -16,7 +16,7 @@ const Options = require("./models/Options");
 const telegram = new Telegram(TOKEN);
 
 const agenda = new Agenda({
-  processEvery: "30 seconds",
+  processEvery: "1 second",
   db: {
     address: DB_URL,
     collection: "jobsqueue",
@@ -36,9 +36,15 @@ agenda.define("init_post", async (job, done) => {
   let nearestTime = getNearestTime(optionsDB.autopostingTime);
   if (!nearestTime) {
     nearestTime = optionsDB.autopostingTime[0] + " at tomorrow";
-    optionsDB.activePosts.currentTime = optionsDB.autopostingTime[0];
+    optionsDB.activePost.nextTime = optionsDB.autopostingTime[0];
   } else {
-    optionsDB.activePosts.currentTime = nearestTime;
+    if (optionsDB.activePost.nextTime === nearestTime) {
+      nearestTime =
+        optionsDB.autopostingTime[
+          optionsDB.autopostingTime.indexOf(nearestTime) + 1
+        ] || optionsDB.autopostingTime[0];
+    }
+    optionsDB.activePost.nextTime = nearestTime;
   }
 
   const objectReDB = await ObjectRe.findOne({ isArchived: false }, "point", {
@@ -48,7 +54,7 @@ agenda.define("init_post", async (job, done) => {
     },
   });
 
-  optionsDB.activePosts.currentPoint = objectReDB.point;
+  optionsDB.activePost.nextPoint = objectReDB.point;
   optionsDB.autopostingSkip =
     optionsDB.autopostingSkip < countObjectRes - 1
       ? optionsDB.autopostingSkip + 1
@@ -56,9 +62,8 @@ agenda.define("init_post", async (job, done) => {
   await optionsDB.save();
 
   agenda.schedule(nearestTime, "send_post", { point: objectReDB.point });
-  console.log(nearestTime);
 
-  // await job.remove();
+  await job.remove();
   await done();
 });
 
@@ -88,7 +93,7 @@ agenda.define("send_post", async (job, done) => {
 
   await agenda.now("init_post");
 
-  // await job.remove();
+  await job.remove();
   await done();
 });
 

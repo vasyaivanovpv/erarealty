@@ -48,11 +48,9 @@ const schema = new Schema({
     type: Number,
     default: 0,
   },
-  activePosts: {
-    currentTime: String,
-    currentPoint: String,
+  activePost: {
     nextTime: String,
-    nextObjectRe: String,
+    nextPoint: String,
   },
 });
 

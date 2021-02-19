@@ -5,6 +5,7 @@ const {
   formatPrice,
   escapeChar,
   splitArray,
+  getLocalTime,
 } = require("./utils");
 const {
   objectReTypes,
@@ -146,36 +147,12 @@ const getFilterObject = (filter) => {
   return filterDB;
 };
 
-const getNowTime = () => {
-  let now = new Date();
-
-  if (process.env.NODE_ENV === "production") {
-    now = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      now.getHours() + 3,
-      now.getMinutes()
-    );
-  }
-
-  now.setMinutes("01");
-
-  console.log(now.getHours());
-  console.log(`${now.getMinutes()}`);
-
-  return { hours: now.getHours(), minutes: now.getMinutes() };
-};
-
 const getNearestTime = (times) => {
-  const { hours, minutes } = getNowTime();
+  const currentTime = getLocalTime();
 
   return [...times]
     .filter((time) => {
-      const currentTime = `${hours}:${minutes}`;
-      console.log(currentTime);
-
-      if (time < currentTime) return;
+      if (time <= currentTime) return;
       return time;
     })
     .sort()[0];

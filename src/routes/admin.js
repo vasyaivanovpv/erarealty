@@ -14,7 +14,6 @@ adminRoute.command("getTime", async (ctx) => {
     hour12: false,
   };
 
-  await ctx.replyWithMarkdown(`❗️ ${d}`);
   await ctx.replyWithMarkdown(`❗️ ${d.toString()}`);
   await ctx.replyWithMarkdown(`❗️ ${d.toLocaleTimeString("ru-RU", options)}`);
 });

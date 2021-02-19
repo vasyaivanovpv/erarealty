@@ -15,6 +15,7 @@ const agenda = require("../../agenda");
 
 const Options = require("../../models/Options");
 const User = require("../../models/User");
+const ObjectRe = require("../../models/ObjectRe");
 
 const mainSettingBtns = Markup.inlineKeyboard([
   [
@@ -90,10 +91,16 @@ settings.enter(accessMainMenuMW, async (ctx) => {
 settings.on("callback_query", async (ctx) => {
   const { type } = JSON.parse(ctx.callbackQuery.data);
 
-  let optionsDB, mainSettingText;
+  let optionsDB, mainSettingText, objectReCount;
+
+  objectReCount = await ObjectRe.estimatedDocumentCount();
+  if (!objectReCount) return ctx.answerCbQuery("Нет добавленных объектов!");
 
   switch (type) {
     case typesQuery.START_AUTOPOSTING:
+      objectReCount = await ObjectRe.estimatedDocumentCount();
+      if (!objectReCount) return ctx.answerCbQuery("Нет добавленных объектов!");
+
       optionsDB = await Options.findOne();
       if (!optionsDB.autopostingTime.length)
         return ctx.answerCbQuery("Не установлено время публикаций!");
@@ -117,8 +124,10 @@ settings.on("callback_query", async (ctx) => {
       );
 
     case typesQuery.STOP_AUTOPOSTING:
-      optionsDB = await Options.findOne();
+      objectReCount = await ObjectRe.estimatedDocumentCount();
+      if (!objectReCount) return ctx.answerCbQuery("Нет добавленных объектов!");
 
+      optionsDB = await Options.findOne();
       if (optionsDB.autopostingStatus === autopostingStatuses.stop.name) {
         optionsDB.autopostingSkip = 0;
         await optionsDB.save();
@@ -141,6 +150,9 @@ settings.on("callback_query", async (ctx) => {
       return ctx.answerCbQuery(`Автопостинг ${autopostingStatuses.stop.text}!`);
 
     case typesQuery.PAUSE_AUTOPOSTING:
+      objectReCount = await ObjectRe.estimatedDocumentCount();
+      if (!objectReCount) return ctx.answerCbQuery("Нет добавленных объектов!");
+
       optionsDB = await Options.findOne();
       if (optionsDB.autopostingStatus === autopostingStatuses.pause.name)
         return ctx.answerCbQuery(
@@ -152,6 +164,8 @@ settings.on("callback_query", async (ctx) => {
 
       mainSettingText = getMainSettingText(optionsDB);
 
+      await agenda.cancel();
+      await agenda.purge();
       await agenda.stop();
 
       await ctx.editMessageText(mainSettingText, mainSettingBtns);

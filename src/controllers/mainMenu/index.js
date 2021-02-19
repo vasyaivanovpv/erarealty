@@ -1,6 +1,6 @@
 const Scene = require("telegraf/scenes/base");
 const Markup = require("telegraf/markup");
-const { typesQuery } = require("../../constants");
+const { typesQuery, autopostingStatuses } = require("../../constants");
 const {
   checkJSONmw,
   getAutopostingStatusStr,
@@ -39,8 +39,13 @@ mainMenu.enter(accessMainMenuMW, async (ctx) => {
     optionsDB.autopostingStatus
   );
 
+  const nextPostStr =
+    optionsDB.autopostingStatus === autopostingStatuses.start.name
+      ? `\n\nСледующая публикация в *${optionsDB.activePost.nextTime}* \nОбъект № _${optionsDB.activePost.nextPoint}_`
+      : "";
+
   await ctx.replyWithMarkdown(
-    `🏠 *Главное меню* \n\nАвтопостинг ${autopostingStatusStr} \n\nПоследняя публикация в 16:45 \nобъект № 1608812148905 \n\nСледующая публикация в 19:15 \nобъект № 1608812148905 \n\nОбъектов в базе данных: \nАктивные: *${activeObjectReCount}* \nВ архиве: ${archiveObjectReCount} \nВсего: ${objectReCount} \n\n_Вернуться в Главное меню в любой момент /start_`,
+    `🏠 *Главное меню* \n\nАвтопостинг ${autopostingStatusStr} ${nextPostStr} \n\nОбъектов в базе данных: \nАктивные: *${activeObjectReCount}* \nВ архиве: ${archiveObjectReCount} \nВсего: ${objectReCount} \n\n_Вернуться в Главное меню в любой момент /start_`,
     Markup.inlineKeyboard([
       [
         Markup.callbackButton(
@@ -72,30 +77,25 @@ mainMenu.on("callback_query", checkJSONmw, async (ctx) => {
   switch (type) {
     case typesQuery.ADD_OBJECT:
       options = await Options.findOne({}, "contact");
-      if (!checkContact(options)) {
-        await ctx.answerCbQuery();
-        return ctx.replyWithMarkdown(
-          "❗️ Невозможно зайти! Заполните информацию о контактах в меню *Настройки*."
+      if (!checkContact(options))
+        return ctx.answerCbQuery(
+          `Чтобы войти заполните контакты в меню ⚙️ Настройки!`,
+          true
         );
-      }
 
       await ctx.answerCbQuery("Добавить объект");
       return ctx.scene.enter("step_object_re_type");
 
     case typesQuery.ALL_OBJECTS:
       options = await Options.findOne({}, "contact");
-      if (!checkContact(options)) {
-        await ctx.answerCbQuery();
-        return ctx.replyWithMarkdown(
-          "❗️ Невозможно зайти! Заполните информацию о контактах в меню *Настройки*."
+      if (!checkContact(options))
+        return ctx.answerCbQuery(
+          `Чтобы войти заполните контакты в меню ⚙️ Настройки!`,
+          true
         );
-      }
 
       const objectReCount = await ObjectRe.estimatedDocumentCount();
-      if (!objectReCount) {
-        await ctx.answerCbQuery("❗️ Нет добавленных объектов!");
-        return ctx.replyWithMarkdown(`❗️ Нет добавленных объектов!`);
-      }
+      if (!objectReCount) return ctx.answerCbQuery("Нет добавленных объектов!");
 
       await ctx.answerCbQuery("Все объекты");
       return ctx.scene.enter("step_object_list");
@@ -109,17 +109,12 @@ mainMenu.on("callback_query", checkJSONmw, async (ctx) => {
       return ctx.scene.enter("settings");
 
     default:
-      await ctx.replyWithMarkdown(
-        `❗️ Используйте кнопки в меню _Главное меню_.`
-      );
-      break;
+      return ctx.answerCbQuery(`Используйте кнопки в меню 🏠 Главное меню.`);
   }
-
-  await ctx.answerCbQuery();
 });
 
 mainMenu.use(async (ctx) => {
-  await ctx.replyWithMarkdown(`❗️ Используйте кнопки в меню _Главное меню_.`);
+  await ctx.replyWithMarkdown(`❗️ Используйте кнопки в меню 🏠 Главное меню.`);
 });
 
 module.exports = mainMenu;
