@@ -2,6 +2,7 @@ const Scene = require("telegraf/scenes/base");
 const { getFilterObject } = require("../../helpers");
 
 const ObjectRe = require("../../models/ObjectRe");
+const Options = require("../../models/Options");
 
 const stepFindByPoint = new Scene("step_find_by_point");
 
@@ -17,9 +18,10 @@ stepFindByPoint.start(async (ctx) => {
 
 stepFindByPoint.on("text", async (ctx) => {
   const { text } = ctx.message;
-  const { allObjects } = ctx.session;
 
-  const filterDB = getFilterObject(allObjects.filter);
+  const options = await Options.findOne({}, "allObjects");
+
+  const filterDB = getFilterObject(options.allObjects.filter);
   filterDB.point = text;
 
   const objectReDB = await ObjectRe.findOne(filterDB);
