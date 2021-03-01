@@ -30,6 +30,12 @@ module.exports = {
     const re = /\S+@\S+\.\S+/;
     return re.test(email);
   },
+  convertToServerTime: (timeStr) => {
+    const time = timeStr.split(":");
+    const now = new Date();
+    now.setHours(+time[0] - 3, 0);
+    return `${now.getHours()}:${time[1]}`;
+  },
   splitArray: (arr, perChunk = 5) => {
     let i, j, tempArr;
     const resultArr = [];

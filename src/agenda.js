@@ -4,11 +4,13 @@ const {
   DB_PASSWORD,
   DB_URL,
   MAIN_CHANNEL,
+  IS_PROD,
 } = require("./config");
 const Agenda = require("agenda");
 const Telegram = require("telegraf/telegram");
 
 const { createCaption, getNearestTime } = require("./helpers");
+const { convertToServerTime } = require("./utils");
 
 const ObjectRe = require("./models/ObjectRe");
 const Options = require("./models/Options");
@@ -61,7 +63,8 @@ agenda.define("init_post", async (job, done) => {
       : 0;
   await optionsDB.save();
 
-  agenda.schedule(nearestTime, "send_post", { point: objectReDB.point });
+  const serverTime = IS_PROD ? convertToServerTime(nearestTime) : nearestTime;
+  agenda.schedule(serverTime, "send_post", { point: objectReDB.point });
 
   await job.remove();
   await done();

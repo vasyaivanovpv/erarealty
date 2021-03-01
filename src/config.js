@@ -8,6 +8,7 @@ const config = {
   DB_USER: "",
   DB_PASSWORD: "",
   BOT_USERNAME: "veshanieBot",
+  IS_PROD: false,
 };
 
 if (process.env.NODE_ENV === "production") {
@@ -19,6 +20,7 @@ if (process.env.NODE_ENV === "production") {
   config.DB_USER = process.env.DB_USER;
   config.DB_PASSWORD = process.env.DB_PASSWORD;
   config.BOT_USERNAME = "testserverbybot";
+  config.IS_PROD = true;
 }
 
 module.exports = config;
