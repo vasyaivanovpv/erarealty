@@ -7,7 +7,7 @@
   "dependencies": {
     "agenda": "^3.1.0",
     "dotenv": "^8.2.0",
-    "mongoose": "^5.9.10",
+    "mongoose": "5.9.10",
     "telegraf": "^3.37.0",
     "telegraf-media-group": "^1.1.1",
     "telegraf-ratelimit": "^2.0.0"
