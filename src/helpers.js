@@ -1,3 +1,4 @@
+const { BOT_USERNAME } = require("./config");
 const Markup = require("telegraf/markup");
 const {
   escapeRegExp,
@@ -35,7 +36,7 @@ const createCaption = async (post) => {
   const priceStr = formatPrice(post.price);
   const escapeExtra = escapeRegExp(post.extra);
   const mortgageStr = post.mortgage
-    ? `\n[оформить заявку на ипотеку](t.me/veshanieBot?start=${post.point})`
+    ? `\n[оформить заявку на ипотеку](t.me/${BOT_USERNAME}?start=${post.point})`
     : "";
   const districtStr =
     typeof post.district === "string" ? post.district : post.district.name;
