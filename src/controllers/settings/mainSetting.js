@@ -121,9 +121,6 @@ settings.on("callback_query", async (ctx) => {
       );
 
     case typesQuery.STOP_AUTOPOSTING:
-      objectReCount = await ObjectRe.estimatedDocumentCount();
-      if (!objectReCount) return ctx.answerCbQuery("Нет добавленных объектов!");
-
       optionsDB = await Options.findOne();
       if (optionsDB.autopostingStatus === autopostingStatuses.stop.name) {
         optionsDB.autopostingSkip = 0;
