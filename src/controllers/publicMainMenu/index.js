@@ -30,7 +30,7 @@ publicMainMenu.enter(accessPublicMenuMW, async (ctx) => {
 
   if (!ctx.startPayload)
     return ctx.replyWithMarkdown(
-      `Здравствуйте! \nЕсли вы хотите купить недвижимость в Пензе, то посмотрите наши объекты на канале t.me/realty\\_penza.`
+      `Здравствуйте! \nЕсли вы хотите купить недвижимость в Пензе, то посмотрите наши объекты на канале t.me/realty\\_pnz.`
     );
 
   ctx.session.applyMortgage.point = +ctx.startPayload;
@@ -39,7 +39,7 @@ publicMainMenu.enter(accessPublicMenuMW, async (ctx) => {
 
   if (!objectReDB)
     return ctx.replyWithMarkdown(
-      `❗️ Что-то пошло не так, возможно данный объект недвижимости уже продан! \n\nПосмотрите другие наши объекты на канале t.me/realty\\_penza.`
+      `❗️ Что-то пошло не так, возможно данный объект недвижимости уже продан! \n\nПосмотрите другие наши объекты на канале t.me/realty\\_pnz.`
     );
 
   const miniCaption = createMiniCaption(objectReDB);

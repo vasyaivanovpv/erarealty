@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === "production") {
   config.DB_HOST = process.env.DB_HOST;
   config.DB_USER = process.env.DB_USER;
   config.DB_PASSWORD = process.env.DB_PASSWORD;
-  config.BOT_USERNAME = "testserverbybot";
+  config.BOT_USERNAME = "realty_pnz_bot";
   config.IS_PROD = true;
 }
 
